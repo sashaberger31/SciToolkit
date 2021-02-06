@@ -6,12 +6,27 @@
     <script defer src = "frontendScript.js"></script>
   </head>
   <body>
-    <div id = "formDiv">
-      <label for = "equation"> Enter Equation: </label>
+    <div id = "stoichDiv">
+      <label for = "equation"> </label>
       <input id = "equation" name = "equation" type = "text" />
       <br />
-      <label for = "moles"> Enter Amount of Moles in "1":</label>
-      <input id = "moles" name = "moles" type = "number" />
+      <label for = "stoich"></label>
+      <input id = "stoich" name = "stoich" type = "number" />
+      <br />
+      <button onclick = "submitted()"> Calculate</button>
+    </div>
+    <div id = "balanceDiv">
+      <label for = "equation"> </label>
+      <input id = "equation" name = "equation" type = "text" />
+      <br />
+      <button onclick = "submitted()"> Calculate</button>
+    </div>
+    <div id = "wavelengthDiv">
+      <label for = "n1"> </label>
+      <input id = "n1" name = "n1" type = "number" />
+      <br />
+      <label for = "n1"> </label>
+      <input id = "n1" name = "n1" type = "number" />
       <br />
       <button onclick = "submitted()"> Calculate</button>
     </div>
