@@ -9,11 +9,23 @@ function processEquation(eq) {
   var in_element = true;
   var compounds = []; // Compound and coefficient
 
+  var strippedEq = eq.replace(/\s/g, '');
+  var splitEq = eq.split('+');
+  for (counter = 0; counter<splitEq.length; counter++) {
+    var coefficient = 1;
+    var toParse = splitEq[counter];
+    if !isNaN(parseFloat(splitEq[counter][0])) {
+      coefficient = splitEq[counter][0];
+      toParse = splitEq.slice(1,splitEq[counter].length)
+    }
+    for(inElementCounter = 0; inElementCounter<)
+  }
+
   for (counter = 0; counter<eq.length; counter++) {
-    if !in_element && !isNaN(parseFloat(eq.charAt(counter))) {
+    if (!in_element && !isNaN(parseFloat(eq.charAt(counter)))) {
       // We've encountered a coefficient
       var current_coeff = eq.charAt(counter);
-    } else if {
+    } else if (in_element){
 
     }
   }
