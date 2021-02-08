@@ -144,5 +144,16 @@ function stoichSubmitted() {
   var moles = $('#moles1').val().replace(/\s/g, '');
   var answer = parseFloat(coeff2)/parseFloat(coeff1) * parseFloat(moles);
   $('#ans').html(answer);
+  var submissionJSON = {'eq': balance.val(), 'molecule1':molecule1, 'molecule2': molecule2, 'mole1': moles1};
+  store = window.localStorage;
+  var prevJSON = JSON.parse(store.getItem("prev"));
+  if(prevJSON) {
+    // Recreate previous
+    $('#prevEq').html(prevJSON['eq']);
+    $('#prevMolec1').html(prevJSON['molecule1']);
+    $('#prevMole1').html(prevJSON['mole1']);
+    $('#prevMolec2').html(prevJSON['molecule2']);
+  }
+  store.setItem("prev", JSON.stringify(submissionJSON));
 
 }
