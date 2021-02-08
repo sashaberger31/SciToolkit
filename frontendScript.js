@@ -87,9 +87,15 @@ function processEquation(pass_eq) {
 }
 
 function arrayEq(arr1, arr2) { // Sad but necessary
+  console.log(arr1,arr2);
   if( arr1.length === arr2.length) {
     for (i=0; i<arr1.length; i++) {
-      if (arr1[i] !== arr2[i]) {
+      if (typeof arr1[i] == "object") {
+        if (!arrayEq(arr1[i],arr2[i])) { return false;}  // Recursive badness; WHY IS JS LIKE THIS???
+                                                        // I just want to compare two arrays
+      } else if (arr1[i] != arr2[i]) {
+        console.log("Failed");
+        console.log(arr1[i],arr2[i]);
         return false;
       }
     }
@@ -97,6 +103,7 @@ function arrayEq(arr1, arr2) { // Sad but necessary
     return false;
   }
   return true;
+
 }
 
 function stoichSubmitted() {
@@ -107,8 +114,6 @@ function stoichSubmitted() {
   var processed1 = parseCompound(molecule1)[1];
   var processed2 = parseCompound(molecule2)[1];
 
-  console.log(processedEq[1]);
-  return false;
   // Loop through to find the coefficients:
   var coeff1 = 1;
   var coeff2 = 1;
@@ -117,17 +122,22 @@ function stoichSubmitted() {
     var testCompound = processedEq[0][i][1];
     if (arrayEq(processed1, testCompound)) {
       coeff1 = coeff;
+      break;
     } else if (i === processedEq[0].length-1) {
       console.log("Error: Compound not found!");
     }
   }
-  for (i=0; i<processedEq[1].length; i++) { // Second the right hand side
-    var coeff = processedEq[1][i][0];
-    var testCompound = processedEq[1][i][1];
-    console.log("Secondary");
+  for (j=0; j<processedEq[1].length; j++) { // Second the right hand side
+    var coeff = processedEq[1][j][0];
+    var testCompound = processedEq[1][j][1];
+
     if (arrayEq(processed2, testCompound)) {
       coeff2 = coeff;
-    } else if (i === processedEq[1].length-1) {
+      console.log("Secondary");
+      console.log(testCompound);
+      console.log(processed2);
+      break;
+    } else if (j === processedEq[1].length-1) {
       console.log("Error: Compound not found!");
     }
   }
