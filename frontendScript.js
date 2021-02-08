@@ -24,6 +24,38 @@ const deepCopyFunction = (inObject) => {
   return outObject
 }
 
+function parseCompound(compound) {
+  var result = compound.match(/[a-z]+|[^a-z]+/gi);
+  if (!isNaN(parseFloat(result[0]))) {
+      var coeff = result[0];
+      var elements = deepCopyFunction(result).slice(1);
+
+  } else {
+    var coeff = 1;
+    var elements = deepCopyFunction(result);
+
+  }
+
+  var newElements = [];
+  var skip = false;
+  for (j=0; j<elements.length; j++) {
+    if (!skip){
+      if (j===elements.length-1){
+        newElements.push(deepCopyFunction([elements[j],1]));
+      } else if (!isNaN(parseFloat(elements[j+1]))) {
+        sub = elements[j+1];
+        skip = true;
+        newElements.push(deepCopyFunction([elements[j], sub]));
+      } else {
+        skip = false;
+        newElements.push(deepCopyFunction([elements[j],1]));
+      }
+    } else {
+      skip = false;
+    }
+  }
+  return deepCopyFunction([coeff, newElements]);
+}
 function processEquation(pass_eq) {
   eq = String(pass_eq); // I have no idea why i need to do this but it fixes a problem
   // Although pass_eq is already supposed to be a string
@@ -42,72 +74,65 @@ function processEquation(pass_eq) {
   var lhsCompounds = []; // 5CrH2 + 6Cd = [[5,[[Cr,1],[H,2]]], [6,[[Cd,1]]]]
   var rhsCompounds = [];
   for(i=0; i<lhsTerms.length; i++) {
-    var result = lhsTerms[i].match(/[a-z]+|[^a-z]+/gi);
-    if (!isNaN(parseFloat(result[0]))) {
-        var coeff = result[0];
-        var elements = deepCopyFunction(result).slice(1);
-
-    } else {
-      var coeff = 1;
-      var elements = deepCopyFunction(result);
-
-    }
-
-    var newElements = [];
-    var skip = false;
-    for (j=0; j<elements.length; j++) {
-      if (!skip){
-        if (j===elements.length-1){
-          newElements.push(deepCopyFunction([elements[j],1]));
-        } else if (!isNaN(parseFloat(elements[j+1]))) {
-          sub = elements[j+1];
-          skip = true;
-          newElements.push(deepCopyFunction([elements[j], sub]));
-        } else {
-          skip = false;
-          newElements.push(deepCopyFunction([elements[j],1]));
-        }
-      } else {
-        skip = false;
-      }
-    }
-    lhsCompounds.push(deepCopyFunction([coeff,newElements]));
+    var compoundProcessed = parseCompound(lhsTerms[i])
+    lhsCompounds.push(compoundProcessed);
   }
-
 
   for(i=0; i<rhsTerms.length; i++) {
-    var result = rhsTerms[i].match(/[a-z]+|[^a-z]+/gi);
-    if (!isNaN(parseFloat(result[0]))) {
-        var coeff = result[0];
-        var elements = deepCopyFunction(result).slice(1);
+    var compoundProcessed = parseCompound(rhsTerms[i])
+    rhsCompounds.push(compoundProcessed);
+  }
 
-    } else {
-      var coeff = 1;
-      var elements = deepCopyFunction(result);
+  return [lhsCompounds, rhsCompounds];
+}
 
-    }
-
-    var newElements = [];
-    var skip = false;
-    for (j=0; j<elements.length; j++) {
-      if (!skip){
-        if (j===elements.length-1){
-          newElements.push(deepCopyFunction([elements[j],1]));
-        } else if (!isNaN(parseFloat(elements[j+1]))) {
-          sub = elements[j+1];
-          skip = true;
-          newElements.push(deepCopyFunction([elements[j], sub]));
-        } else {
-          skip = false;
-          newElements.push(deepCopyFunction([elements[j],1]));
-        }
-      } else {
-        skip = false;
+function arrayEq(arr1, arr2) { // Sad but necessary
+  if( arr1.length === arr2.length) {
+    for (i=0; i<arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
+        return false;
       }
     }
-    rhsCompounds.push(deepCopyFunction([coeff,newElements]));
+  } else {
+    return false;
   }
-  console.log("Final");
-  console.log(lhsCompounds);
-  console.log(rhsCompounds);
+  return true;
+}
+
+function stoichSubmitted() {
+  var balance = $('#equation');
+  processedEq = processEquation(balance.val()); // See the above
+  var molecule1 = $('#molecule1').val().replace(/\s/g, '');
+  var molecule2 = $('#molecule2').val().replace(/\s/g, '');
+  var processed1 = parseCompound(molecule1)[1];
+  var processed2 = parseCompound(molecule2)[1];
+
+  console.log(processedEq[1]);
+  return false;
+  // Loop through to find the coefficients:
+  var coeff1 = 1;
+  var coeff2 = 1;
+  for (i=0; i<processedEq[0].length; i++) { // First the left hand side
+    var coeff = processedEq[0][i][0];
+    var testCompound = processedEq[0][i][1];
+    if (arrayEq(processed1, testCompound)) {
+      coeff1 = coeff;
+    } else if (i === processedEq[0].length-1) {
+      console.log("Error: Compound not found!");
+    }
+  }
+  for (i=0; i<processedEq[1].length; i++) { // Second the right hand side
+    var coeff = processedEq[1][i][0];
+    var testCompound = processedEq[1][i][1];
+    console.log("Secondary");
+    if (arrayEq(processed2, testCompound)) {
+      coeff2 = coeff;
+    } else if (i === processedEq[1].length-1) {
+      console.log("Error: Compound not found!");
+    }
+  }
+  var moles = $('#moles1').val().replace(/\s/g, '');
+  var answer = parseFloat(coeff2)/parseFloat(coeff1) * parseFloat(moles);
+  $('#ans').html(answer);
+
 }

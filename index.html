@@ -11,20 +11,25 @@
   </head>
   <body>
 
-    <div id = "balanceDiv">
-      <label for = "equation"> </label>
-      <input id = "equation" name = "equation" type = "text" />
-      <br />
-      <button onclick = "balanceSubmitted()"> Calculate</button>
-    </div>
-    <div id = "wavelengthDiv">
-      <label for = "n1"> </label>
-      <input id = "n1" name = "n1" type = "number" />
-      <br />
-      <label for = "n1"> </label>
-      <input id = "n1" name = "n1" type = "number" />
-      <br />
-      <button onclick = "wavelengthSubmitted()"> Calculate</button>
+    <div id = "stoichDiv">
+      <label for = "equation">Enter the equation in the format 6H2O + 2H -> 14H + 3O2</label>
+      <input id = "equation" name = "equation" type = "text"/>
+      <br/>
+
+      <label for = "molecule1">Enter a molecule on the left hand side. </label>
+      <input id = "molecule1" name = "molecule1" type = "text"/>
+      <br/>
+      <label for = "moles1">Enter the number of moles of the above compound.</label>
+      <input id = "moles1" name = "moles1" type = "number"/>
+      <br/>
+
+      <label for = "molecule2">Enter a molecule on the right hand side. </label>
+      <input id = "molecule2" name = "molecule" type = "text"/>
+      <br/>
+      <button onclick = "stoichSubmitted()"> Calculate</button>
+      <h3>Answer:</h3>
+      <br/>
+      <h4 id = "ans"> </h4>
     </div>
   </body>
 </html>
